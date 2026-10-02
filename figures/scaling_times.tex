@@ -1,0 +1,13 @@
+\begin{tabular}{lr@{\,/\,}lr@{\,/\,}lr@{\,/\,}lr@{\,/\,}lr@{\,/\,}l}
+\toprule
+& \multicolumn{10}{c}{Native / Lifted Runtime [ms]} \\
+\cmidrule(lr){2-11}
+Penalty & \multicolumn{2}{c}{$n=25$} & \multicolumn{2}{c}{$n=50$} & \multicolumn{2}{c}{$n=100$} & \multicolumn{2}{c}{$n=400$} & \multicolumn{2}{c}{$n=800$} \\
+\midrule
+Quadratic & 0.080 & 0.081 & 0.15 & 0.17 & 0.71 & 0.73 & 19 & 23 & 132 & 154 \\
+$\ell_1$ & 0.082 & 0.19 & 0.18 & 0.63 & 0.96 & 2.7 & 31 & 61 & 226 & 346 \\
+Elastic net & 0.081 & 0.14 & 0.16 & 0.43 & 0.68 & 1.6 & 23 & 34 & 169 & 217 \\
+Huber & 0.079 & 0.14 & 0.18 & 0.61 & 0.89 & 2.5 & 25 & 53 & 161 & 310 \\
+$\ell_\infty$ & 0.099 & 0.14 & 0.28 & 0.34 & 1.1 & 1.4 & 35 & 65 & 212 & 500 \\
+\bottomrule
+\end{tabular}

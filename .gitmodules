@@ -1,0 +1,8 @@
+[submodule "external/osqp"]
+	path = external/osqp
+	url = https://github.com/A2R-Lab/osqp.git
+	branch = general_slack
+[submodule "external/osqp-python"]
+	path = external/osqp-python
+	url = https://github.com/A2R-Lab/osqp-python.git
+	branch = general_slack
