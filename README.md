@@ -21,6 +21,36 @@ data/                   results used in the paper
 figures/                figures and table of the paper (PDF/TeX), plus PNGs for this README
 ```
 
+## Using the solver
+
+After `setup`, one call softens any subset of the constraint rows:
+
+```python
+import osqp
+
+solver = osqp.OSQP()
+solver.setup(P, q, A, l, u)
+solver.setup_penalty(
+    penalty_type,         # per row: osqp.PenaltyType.OSQP_PENALTY_{NONE, L1L2, HUBER, NORM2, NORMINF}
+    alpha1=alpha1,        # weights: scalars or per-row arrays
+    alpha2=alpha2,
+    delta=delta,
+    group_id=group_id,    # row groups for NORM2/NORMINF
+)
+result = solver.solve()
+xi = solver.slack(result.x)
+```
+
+## Example: soft-constrained MPC
+
+[`notebooks/mpc_example.ipynb`](notebooks/mpc_example.ipynb) is a step-by-step tutorial on a cart that must stay below a position limit:
+
+1. a disturbance makes the hard MPC infeasible, while the soft MPC recovers;
+2. quadratic vs. $\ell_1$ penalty;
+3. updating the penalty weights online, without a new setup.
+
+<p align="center"><img src="figures/mpc_example.png" width="520"></p>
+
 ## Installation
 
 You need Python ≥ 3.10, CMake, and a C compiler.
@@ -78,28 +108,6 @@ Native slack penalties against explicit lifting to a standard QP, on random spar
 A one-day schedule for a building with two thermal zones, a battery, and a grid connection, mixing a different penalty for each soft constraint group.
 
 <p align="center"><img src="figures/energy_hub.png" width="420"></p>
-
-## Using the solver
-
-After `setup`, one call softens any subset of the constraint rows:
-
-```python
-import osqp
-
-solver = osqp.OSQP()
-solver.setup(P, q, A, l, u)
-solver.setup_penalty(
-    penalty_type,         # per row: osqp.PenaltyType.OSQP_PENALTY_{NONE, L1L2, HUBER, NORM2, NORMINF}
-    alpha1=alpha1,        # per-row weights
-    alpha2=alpha2,
-    delta=delta,
-    group_id=group_id,    # row groups for NORM2/NORMINF
-)
-result = solver.solve()
-xi = solver.slack(result.x)
-```
-
-[`notebooks/mpc_example.ipynb`](notebooks/mpc_example.ipynb) walks through a soft-constrained MPC: a disturbance that makes the hard problem infeasible, how the penalty choice shapes the violation, and online updates of bounds and penalty weights.
 
 ## AI disclaimer
 
