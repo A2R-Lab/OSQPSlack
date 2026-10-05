@@ -122,7 +122,7 @@ def plot(pairs):
     for ax, label in zip(axes[:, 0], ("Speedup\n", "Iterations", "Time [%]")):
         ax.set_ylabel(label)
     axes[0, 0].annotate(
-        "(Lifted / Native)",
+        "(Lifted / Ours)",
         xy=(1.0, 0.5),
         xycoords=axes[0, 0].yaxis.label,
         rotation=90,
@@ -149,7 +149,7 @@ def plot(pairs):
         )
         for side in ("native", "lifted")
     ]
-    labels = list(COMPONENTS) + ["Native", "Lifted"]
+    labels = list(COMPONENTS) + ["Ours", "Lifted"]
     fig.legend(
         handles,
         labels,
@@ -174,7 +174,7 @@ def table(pairs):
     lines = [
         r"\begin{tabular}{l" + r"r@{\,/\,}l" * len(TABLE_N) + "}",
         r"\toprule",
-        rf"& \multicolumn{{{k}}}{{c}}{{Native / Lifted Runtime [ms]}} \\",
+        rf"& \multicolumn{{{k}}}{{c}}{{Ours / Lifted Runtime [ms]}} \\",
         rf"\cmidrule(lr){{2-{k + 1}}}",
         "Penalty & " + " & ".join(rf"\multicolumn{{2}}{{c}}{{$n={n}$}}" for n in TABLE_N) + r" \\",
         r"\midrule",
