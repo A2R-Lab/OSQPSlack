@@ -45,7 +45,6 @@ RAMP_LIMIT = 1.6  # soft, HVAC ramp rate [kW/h]
 
 COMFORT_BAND = (21.0, 24.0)  # soft, during occupancy
 SETBACK = 10.0  # the comfort band widens by this outside occupancy
-SAFETY_BAND = (16.0, 32.0)  # hard
 OCCUPANCY = (8.0, 20.0)
 
 OUTSIDE_MEAN, OUTSIDE_AMPLITUDE, OUTSIDE_PEAK_HOUR = 26.0, 9.0, 15.0
@@ -55,8 +54,7 @@ HEAT_EVENT, HEAT_EVENT_GAIN = (13.0, 18.0), 0.40  # zone 1 only
 PRICES = (0.10, 0.18, 0.40)  # off-peak (before 14 h), shoulder, peak [per kWh]
 PEAK = (14.0, 20.0)
 
-POWER_WEIGHT = 1e-3  # tie-breaking regularization of all inputs
-RAMP_WEIGHT = 5e-3  # tie-breaking regularization of HVAC power changes
+POWER_WEIGHT = 1e-3  # tie-breaking regularization POWER_WEIGHT * |u_k|^2 of all inputs
 
 # Penalty weights. Separable penalties sum over time steps, so they are
 # scaled by DT; the l-inf penalty prices a peak and is not.
@@ -136,9 +134,7 @@ def problem():
         return sparse.csr_matrix((np.broadcast_to(values, len(cols)), (rows, cols)), shape=(len(cols), n))
 
     # Objective: energy cost of the grid import plus tie-breaking regularization.
-    D = sparse.diags_array([1.0, -1.0], offsets=[0, -1], shape=(N, N))  # u_k - u_{k-1}, u_{-1} = 0
-    P = sparse.block_diag((sparse.csr_matrix(((N + 1) * NX, (N + 1) * NX)), DT * POWER_WEIGHT * sparse.eye(N * NU)))
-    P = P + RAMP_WEIGHT / DT * select(u_index(HVAC)).T @ (D.T @ D) @ select(u_index(HVAC))
+    P = sparse.block_diag((sparse.csr_matrix(((N + 1) * NX, (N + 1) * NX)), 2 * POWER_WEIGHT * sparse.eye(N * NU)))
     q = np.zeros(n)
     q[u_index(GRID)] = DT * price()
 
@@ -162,7 +158,6 @@ def problem():
         ("grid feeder", select(u_index(GRID)), 0.0, FEEDER_LIMIT),
         ("battery capacity", select(x_index(CHARGE)), 0.0, BATTERY_CAPACITY),
         ("terminal charge", select(x_index(CHARGE)[-1:]), INITIAL_CHARGE, BATTERY_CAPACITY),
-        ("safety", select(temperatures), SAFETY_BAND[0], SAFETY_BAND[1]),
         ("comfort", select(temperatures), np.tile(lower, 2), np.tile(upper, 2)),
         ("grid contract", select(u_index(GRID)), -np.inf, CONTRACT_LIMIT),
         ("battery health", select(x_index(CHARGE)), SOC_BAND[0] * BATTERY_CAPACITY, SOC_BAND[1] * BATTERY_CAPACITY),

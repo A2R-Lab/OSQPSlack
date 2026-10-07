@@ -1,15 +1,15 @@
 {
   "native": {
     "variables": 579,
-    "constraints": 1449,
-    "iterations": 1575,
-    "time_ms": 21.8
+    "constraints": 1255,
+    "iterations": 375,
+    "time_ms": 5.1
   },
   "lifted": {
     "variables": 1061,
-    "constraints": 1834,
-    "iterations": 1725,
-    "time_ms": 33.03
+    "constraints": 1640,
+    "iterations": 725,
+    "time_ms": 14.45
   },
-  "speedup": 1.52
+  "speedup": 2.83
 }
